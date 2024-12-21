@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "com.om1cael"
@@ -11,4 +12,8 @@ repositories {
 
 dependencies {
     implementation("org.postgresql:postgresql:42.7.4")
+}
+
+application {
+    mainClass.set("com.om1cael.Main")
 }

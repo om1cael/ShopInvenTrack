@@ -1,19 +1,18 @@
 package com.om1cael.view;
 
 import com.om1cael.controller.InputController;
-import com.om1cael.dao.ProductDAO;
+import com.om1cael.controller.MenuController;
 import com.om1cael.model.Product;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class MenuView {
-    ProductDAO productDAO;
     InputController inputController;
+    MenuController menuController;
 
-    public MenuView(ProductDAO productDAO, InputController inputController) {
+    public MenuView(InputController inputController, MenuController menuController) {
         this.inputController = inputController;
-        this.productDAO = productDAO;
+        this.menuController = menuController;
     }
 
     public void showMenu() {
@@ -23,14 +22,14 @@ public class MenuView {
         System.out.println("[4] List Products");
         System.out.println("[5] List Products With Filter");
         System.out.println("[6] Stock Log");
-        this.handleInput();
+        this.handleInitialInput();
     }
 
     public void addProductUI() {
         Product product = getProduct();
 
-        if(productDAO.addProduct(product)) {
-            System.out.println("Product " + product.name() + " was added successfully!");
+        if(menuController.addProduct(product)) {
+            System.out.println("The product " + product.name() + " was added successfully!");
             return;
         }
 
@@ -39,15 +38,10 @@ public class MenuView {
 
     public void updateProductUI() {
         int id = (int)inputController.getNumberInput("Product ID: ", 0, Integer.MAX_VALUE);
-        if(productDAO.getProduct(id) == null) {
-            System.out.println("The product does not exists.");
-            return;
-        }
-
         Product product = getProduct();
 
-        if(productDAO.updateProduct(product, id)) {
-            System.out.println("Product " + product.name() + " updated successfully!");
+        if(menuController.updateProduct(product, id)) {
+            System.out.println("The product " + product.name() + " was edited successfully!");
             return;
         }
 
@@ -58,22 +52,19 @@ public class MenuView {
 
     public void removeProductUI() {
         int id = (int)inputController.getNumberInput("Product ID: ", 0, Integer.MAX_VALUE);
-        if(productDAO.getProduct(id) == null) {
-            System.out.println("The product does not exists.");
+        boolean productRemoved = menuController.removeProduct(id);
+
+        if(productRemoved) {
+            System.out.println("The product was removed successfully!");
             return;
         }
 
-        if(productDAO.removeProduct(id)) {
-            System.out.println("Product removed successfully!");
-            return;
-        }
-
-        System.out.println("It was not possible to remove the product.");
+        System.out.println("It was not possible to remove the product, or it does not exists.");
     }
 
     public void listProductUI() {
-        List<Product> productList = productDAO.getAllProducts();
-        if(productList == null) {
+        List<Product> productList = menuController.listAllProducts();
+        if(productList == null || productList.isEmpty()) {
             System.out.println("No products to show.");
             return;
         }
@@ -97,7 +88,7 @@ public class MenuView {
         return new Product(0, name, description, price, stock);
     }
 
-    private void handleInput() {
+    private void handleInitialInput() {
         int input = (int)inputController.getNumberInput("Your choice: ", 1, 6);
 
         switch(input) {

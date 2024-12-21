@@ -1,5 +1,6 @@
 package com.om1cael.controller;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class InputController {
@@ -9,10 +10,15 @@ public class InputController {
         this.scanner = scanner;
     }
 
-    public int getNumberInput(int min, int max) {
-        int input = scanner.nextInt();
+    public double getNumberInput(int min, int max) {
+        try {
+            String input = scanner.nextLine();
+            double inputAsDouble = Double.parseDouble(input);
 
-        if(input >= min && input <= max) return input;
-        return input < min ? min : max;
+            if(inputAsDouble >= min && inputAsDouble <= max) return inputAsDouble;
+            return inputAsDouble < min ? min : max;
+        } catch (NumberFormatException | NoSuchElementException e) {
+            throw new RuntimeException("It was not possible to parse the numeric input: " + e.getMessage());
+        }
     }
 }

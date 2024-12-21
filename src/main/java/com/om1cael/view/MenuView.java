@@ -4,6 +4,7 @@ import com.om1cael.controller.InputController;
 import com.om1cael.dao.ProductDAO;
 import com.om1cael.model.Product;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuView {
@@ -26,11 +27,7 @@ public class MenuView {
     }
 
     public void addProductUI() {
-        String name = inputController.getTextInput("Product name: ");
-        String description = inputController.getTextInput("Product description: ");
-        double price = inputController.getNumberInput("Product price: ", 0, Integer.MAX_VALUE);
-        int stock = (int)inputController.getNumberInput("Product stock: ", 0, Integer.MAX_VALUE);
-        Product product = new Product(0, name, description, price, stock);
+        Product product = getProduct();
 
         if(productDAO.addProduct(product)) {
             System.out.println("Product " + product.name() + " was added successfully!");
@@ -40,10 +37,65 @@ public class MenuView {
         System.out.println("The product could not be added.");
     }
 
-    public void updateProductUI() {}
-    public void removeProductUI() {}
-    public void listProductUI() {}
+    public void updateProductUI() {
+        int id = (int)inputController.getNumberInput("Product ID: ", 0, Integer.MAX_VALUE);
+        if(productDAO.getProduct(id) == null) {
+            System.out.println("The product does not exists.");
+            return;
+        }
+
+        Product product = getProduct();
+
+        if(productDAO.updateProduct(product, id)) {
+            System.out.println("Product " + product.name() + " updated successfully!");
+            return;
+        }
+
+        System.out.println("It was not possible to edit the product.");
+    }
+
+
+
+    public void removeProductUI() {
+        int id = (int)inputController.getNumberInput("Product ID: ", 0, Integer.MAX_VALUE);
+        if(productDAO.getProduct(id) == null) {
+            System.out.println("The product does not exists.");
+            return;
+        }
+
+        if(productDAO.removeProduct(id)) {
+            System.out.println("Product removed successfully!");
+            return;
+        }
+
+        System.out.println("It was not possible to remove the product.");
+    }
+
+    public void listProductUI() {
+        List<Product> productList = productDAO.getAllProducts();
+        if(productList == null) {
+            System.out.println("No products to show.");
+            return;
+        }
+
+        System.out.println("\nProduct list:");
+        for (Product product : productList) {
+            System.out.printf(" * %s (ID %d): %n", product.name(), product.id());
+            System.out.println("  - " + product.description());
+            System.out.println("  - $" + product.price());
+            System.out.println("  - " + product.stock() + " units");
+        }
+    }
+
     public void stockLogUI() {}
+
+    private Product getProduct() {
+        String name = inputController.getTextInput("Product name: ");
+        String description = inputController.getTextInput("Product description: ");
+        double price = inputController.getNumberInput("Product price: ", 0, Integer.MAX_VALUE);
+        int stock = (int)inputController.getNumberInput("Product stock: ", 0, Integer.MAX_VALUE);
+        return new Product(0, name, description, price, stock);
+    }
 
     private void handleInput() {
         int input = (int)inputController.getNumberInput("Your choice: ", 1, 6);

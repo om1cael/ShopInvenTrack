@@ -71,6 +71,11 @@ public class ProductDAO {
             this.connection.commit();
             return true;
         } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException("It was not possible to remove the product: " + e.getMessage());
         } finally {
             try {

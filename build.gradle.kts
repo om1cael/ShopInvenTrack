@@ -17,3 +17,7 @@ dependencies {
 application {
     mainClass.set("com.om1cael.Main")
 }
+
+tasks.withType<JavaExec> {
+    standardInput = System.`in`
+}

@@ -28,7 +28,7 @@ public class MenuView {
     public void addProductUI() {
         String name = inputController.getTextInput("Product name: ");
         String description = inputController.getTextInput("Product description: ");
-        double price = inputController.getNumberInput("Product name: ", 0, Integer.MAX_VALUE);
+        double price = inputController.getNumberInput("Product price: ", 0, Integer.MAX_VALUE);
         int stock = (int)inputController.getNumberInput("Product stock: ", 0, Integer.MAX_VALUE);
         Product product = new Product(0, name, description, price, stock);
 

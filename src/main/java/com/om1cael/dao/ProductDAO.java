@@ -30,7 +30,8 @@ public class ProductDAO {
             addProductStatement.setDouble(3, product.price());
             addProductStatement.setInt(4, product.stock());
 
-            return addProductStatement.execute();
+            addProductStatement.execute();
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException("It was not possible to add the product: " + e.getMessage());
         }
@@ -50,7 +51,8 @@ public class ProductDAO {
             updateStatement.setInt(4, product.stock());
             updateStatement.setInt(5, id);
 
-            return updateStatement.execute();
+            updateStatement.execute();
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException("It was not possible to update the product: " + e.getMessage());
         }
@@ -63,11 +65,11 @@ public class ProductDAO {
             this.connection.setAutoCommit(false);
             deleteProductStatement.setInt(1, id);
 
-            boolean isDeleted = deleteProductStatement.execute();
+            deleteProductStatement.execute();
             this.resetIDs();
 
             this.connection.commit();
-            return isDeleted;
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException("It was not possible to remove the product: " + e.getMessage());
         } finally {

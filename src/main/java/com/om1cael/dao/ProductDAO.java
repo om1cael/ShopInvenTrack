@@ -125,7 +125,7 @@ public class ProductDAO {
         }
     }
 
-    public void resetIDs() {
+    private void resetIDs() {
         try(Statement statement = this.connection.createStatement()) {
             statement.execute("ALTER SEQUENCE stock_id_seq RESTART");
             statement.execute("UPDATE stock SET id = DEFAULT");

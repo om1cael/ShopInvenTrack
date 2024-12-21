@@ -10,8 +10,20 @@ public class InputController {
         this.scanner = scanner;
     }
 
-    public double getNumberInput(int min, int max) {
+    public String getTextInput(String message) {
+        String input = null;
+
+        do {
+            System.out.print(message);
+            input = scanner.nextLine();
+        } while (input.isEmpty());
+
+        return input;
+    }
+
+    public double getNumberInput(String message, int min, int max) {
         try {
+            System.out.print(message);
             String input = scanner.nextLine();
             double inputAsDouble = Double.parseDouble(input);
 

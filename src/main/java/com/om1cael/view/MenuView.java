@@ -1,14 +1,18 @@
 package com.om1cael.view;
 
 import com.om1cael.controller.InputController;
+import com.om1cael.dao.ProductDAO;
+import com.om1cael.model.Product;
 
 import java.util.Scanner;
 
 public class MenuView {
+    ProductDAO productDAO;
     InputController inputController;
 
-    public MenuView(InputController inputController) {
+    public MenuView(ProductDAO productDAO, InputController inputController) {
         this.inputController = inputController;
+        this.productDAO = productDAO;
     }
 
     public void showMenu() {
@@ -21,15 +25,28 @@ public class MenuView {
         this.handleInput();
     }
 
-    public void addProductUI() {}
+    public void addProductUI() {
+        String name = inputController.getTextInput("Product name: ");
+        String description = inputController.getTextInput("Product description: ");
+        double price = inputController.getNumberInput("Product name: ", 0, Integer.MAX_VALUE);
+        int stock = (int)inputController.getNumberInput("Product stock: ", 0, Integer.MAX_VALUE);
+        Product product = new Product(0, name, description, price, stock);
+
+        if(productDAO.addProduct(product)) {
+            System.out.println("Product " + product.name() + " was added successfully!");
+            return;
+        }
+
+        System.out.println("The product could not be added.");
+    }
+
     public void updateProductUI() {}
     public void removeProductUI() {}
     public void listProductUI() {}
     public void stockLogUI() {}
 
     private void handleInput() {
-        System.out.print("Your choice: ");
-        int input = inputController.getNumberInput(1, 6);
+        int input = (int)inputController.getNumberInput("Your choice: ", 1, 6);
 
         switch(input) {
             case 1 -> addProductUI();

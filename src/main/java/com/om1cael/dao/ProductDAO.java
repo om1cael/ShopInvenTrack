@@ -50,7 +50,6 @@ public class ProductDAO {
             updateStatement.setInt(4, product.stock());
             updateStatement.setInt(5, id);
 
-            this.resetIDs();
             return updateStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException("It was not possible to update the product: " + e.getMessage());
@@ -61,12 +60,22 @@ public class ProductDAO {
         final String query = "DELETE FROM stock WHERE id=?";
 
         try(PreparedStatement deleteProductStatement = this.connection.prepareStatement(query)) {
+            this.connection.setAutoCommit(false);
             deleteProductStatement.setInt(1, id);
 
+            boolean isDeleted = deleteProductStatement.execute();
             this.resetIDs();
-            return deleteProductStatement.execute();
+
+            this.connection.commit();
+            return isDeleted;
         } catch (SQLException e) {
             throw new RuntimeException("It was not possible to remove the product: " + e.getMessage());
+        } finally {
+            try {
+                this.connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -116,7 +125,7 @@ public class ProductDAO {
         }
     }
 
-    private void resetIDs() {
+    public void resetIDs() {
         try(Statement statement = this.connection.createStatement()) {
             statement.execute("ALTER SEQUENCE stock_id_seq RESTART");
             statement.execute("UPDATE stock SET id = DEFAULT");

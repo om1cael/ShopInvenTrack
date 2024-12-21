@@ -20,8 +20,6 @@ public class MenuView {
         System.out.println("[2] Update Product");
         System.out.println("[3] Remove Product");
         System.out.println("[4] List Products");
-        System.out.println("[5] List Products With Filter");
-        System.out.println("[6] Stock Log");
         this.handleInitialInput();
     }
 
@@ -78,8 +76,6 @@ public class MenuView {
         }
     }
 
-    public void stockLogUI() {}
-
     private Product getProduct() {
         String name = inputController.getTextInput("Product name: ");
         String description = inputController.getTextInput("Product description: ");
@@ -89,15 +85,13 @@ public class MenuView {
     }
 
     private void handleInitialInput() {
-        int input = (int)inputController.getNumberInput("Your choice: ", 1, 6);
+        int input = (int)inputController.getNumberInput("Your choice: ", 1, 4);
 
         switch(input) {
             case 1 -> addProductUI();
             case 2 -> updateProductUI();
             case 3 -> removeProductUI();
             case 4 -> listProductUI();
-            case 5 -> listProductUI();
-            case 6 -> stockLogUI();
         }
     }
 }
